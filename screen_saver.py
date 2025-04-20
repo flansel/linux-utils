@@ -3,10 +3,10 @@ import argparse
 import os
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--script-name", help="Name of the output script (default screen-name)")
-parser.parse_known_args()
+parser.add_argument("--script-name", help="Name of the output script (default screen-name)", default=None)
+args, unkown = parser.parse_known_args()
 
-def parse_w_line(line: str) -> tuple[int, str]:
+def parse_w_line(line: str):
     cols = line.split()
     command = ' '.join(cols[7:])
     window_number = int(cols[2].split('.')[-1])
@@ -15,7 +15,7 @@ def parse_w_line(line: str) -> tuple[int, str]:
 def running_in_screen() -> bool:
     return os.getenv("STY") is not None
 
-def get_window_names() -> list[str]:
+def get_window_names():
     res = subprocess.check_output(['screen', '-Q', 'windows'])
     res = res.split()
     res = [res[i] for i in range(res) if i % 2 != 0]
@@ -28,7 +28,7 @@ def get_current_screen_name() -> str:
 
 def save():
     screen_name = get_current_screen_name()
-    script_name = parser.script_name if parser.script_name is not None else screen_name
+    script_name = args.script_name if args.script_name is not None else screen_name
 
     res = subprocess.check_output(['w'])
     res = str(res)
