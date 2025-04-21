@@ -32,7 +32,8 @@ def save():
     screen_name = "".join(get_current_screen_name().split('.')[1:])
     script_name = args.script_name if args.script_name is not None else screen_name + ".sh"
 
-    res = subprocess.check_output(['w'])
+    # increase PROCPS_FROMLEN to ensure it is not cutoff as we use this to assocaite process to window.
+    res = subprocess.check_output(['PROCPS_FROMLEN=32', 'w'])
     res = str(res)
     # break up res into lines, remove the first line which is a header
     res = res.split('\\n')[2:-1]
