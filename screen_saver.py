@@ -55,12 +55,12 @@ def save(screen_name, script_name):
             # the first tab is opened and named by the screen -dmS command
             f.write("screen -S {0} -X screen -t {1}\n".format(screen_name, get_window_name(window)))
         
-        if window != current_window:
-            # don't run screen-saver again in the script 
-            f.write("screen -S {0} -p {1} -X stuff cd {2} && {3}\r\n".format(screen_name, window, cwd, command))
+        if window != current_window and command != "/bin/bash":
+            # don't run screen-saver again in the script, ignore /bin/bash
+            f.write("screen -S {0} -p {1} -X stuff \"cd {2} && {3}\"\r\n".format(screen_name, window, cwd, command))
         else:
-            f.write("screen -S {0} -p {1} -X stuff cd {2}\r\n".format(screen_name, window, cwd))
-    
+            f.write("screen -S {0} -p {1} -X stuff \"cd {2}\"\r\n".format(screen_name, window, cwd))
+
     f.close()
     os.chmod(script_name, 0o775)
 
